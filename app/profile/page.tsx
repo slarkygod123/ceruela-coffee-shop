@@ -55,8 +55,6 @@ export default function ProfilePage() {
   if (!isClient) return null;
   if (!isLoggedIn) return null;
 
-  const mounted = useMounted();
-  if (!mounted) return null;
   if (loading) return <LoadingState />;
 
   return (
