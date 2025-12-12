@@ -1,11 +1,10 @@
-// app/api/products/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/instances/db";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id'); // Get the id parameter
+    const id = searchParams.get('id'); 
     const roast = searchParams.get('roast');
     const origin = searchParams.get('origin');
     const featured = searchParams.get('featured');
@@ -21,13 +20,13 @@ export async function GET(request: NextRequest) {
     const conditions = [];
     const params = [];
     
-    // Handle single product fetch by ID
+    // handle single product fetch by ID
     if (id) {
       conditions.push('cp.product_id = ?');
       params.push(parseInt(id));
     }
     
-    // Add other filters (only if not fetching single product)
+    // add other filters only if not fetching single product
     if (!id) {
       if (roast && roast !== 'all') {
         conditions.push('cp.roast_type = ?');
@@ -54,7 +53,7 @@ export async function GET(request: NextRequest) {
     
     const [rows] = await pool.query(query, params);
     
-    // Format the response
+    // format the response
     const products = (rows as any[]).map(row => ({
       id: row.product_id,
       name: row.name,
@@ -70,7 +69,7 @@ export async function GET(request: NextRequest) {
       isFeatured: Boolean(row.is_featured)
     }));
     
-    // If fetching single product, return the first one only
+    // ff fetching single product, return the first one only
     const responseData = id ? (products.length > 0 ? products[0] : null) : products;
     
     return NextResponse.json({

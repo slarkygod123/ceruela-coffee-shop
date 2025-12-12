@@ -1,4 +1,3 @@
-// app/api/profile/update/route.ts - Improved version
 import { isValidHashedPassword } from '@/lib/helper/hash/compare-hash-password';
 import { hashPassword } from '@/lib/helper/hash/create-hash-password';
 import pool from '@/lib/instances/db';
@@ -34,7 +33,7 @@ export async function PUT(req: NextRequest) {
     const updates: string[] = [];
     const values: any[] = [];
 
-    // Update email if provided and changed
+    // update email if provided and changed
     if (email && email !== user.email) {
       // Check if email already exists
       const [existing] = await pool.execute(
@@ -53,7 +52,7 @@ export async function PUT(req: NextRequest) {
       values.push(email);
     }
 
-    // Update password if provided
+    // update password if provided
     if (currentPassword && newPassword) {
       // Verify current password
       const isPasswordValid = await isValidHashedPassword(currentPassword, user.password);
@@ -65,13 +64,13 @@ export async function PUT(req: NextRequest) {
         }, { status: 400 });
       }
 
-      // Hash new password
+      // hash new password
       const hashedPassword = await hashPassword(newPassword);
       updates.push('password = ?');
       values.push(hashedPassword);
     }
 
-    // If there are updates to make
+    // if there are updates to make
     if (updates.length > 0) {
       values.push(userId);
       

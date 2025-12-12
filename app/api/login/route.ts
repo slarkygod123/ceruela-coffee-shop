@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    // Validate request body with Zod schema
+    // validate request body with zod schema
     const parseData = loginSchema.safeParse(body);
 
     if (!parseData.success) {
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       ("");
     }
 
-    // Query the user by email
+    // query the user by email
     const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [
       email,
     ]);
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // Compare password with bcrypt
+    // compare password with bcrypt
     const isPasswordValid = await isValidHashedPassword(
       password,
       user.password
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Successful login
+    // successful login
     return NextResponse.json({
       message: "Login successful",
       user: {

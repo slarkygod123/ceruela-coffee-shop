@@ -1,4 +1,3 @@
-// app/api/reviews/featured/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/instances/db";
 
@@ -20,7 +19,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const limit = searchParams.get('limit') || '3';
     
-    // UPDATED QUERY: Added profile_picture and name fields
+    // update query
     const query = `
       SELECT 
         r.*,
@@ -36,7 +35,7 @@ export async function GET(request: NextRequest) {
     
     const [rows] = await pool.query(query, [parseInt(limit)]);
     
-    // Format the response
+    // format the response
     const reviews = (rows as ReviewRow[]).map(row => ({
       review_id: row.review_id,
       user_id: row.user_id,
@@ -46,8 +45,8 @@ export async function GET(request: NextRequest) {
       review_date: row.review_date,
       user_email: row.user_email,
       product_name: row.product_name,
-      profile_picture: row.profile_picture,  // ADDED
-      user_name: row.user_email.split('@')[0],  // Use actual name if available
+      profile_picture: row.profile_picture,  
+      user_name: row.user_email.split('@')[0], 
       location: "Philippines"
     }));
     

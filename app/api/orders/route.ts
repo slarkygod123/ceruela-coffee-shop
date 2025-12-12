@@ -1,8 +1,7 @@
-// app/api/orders/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/instances/db";
 
-// GET - Get user's orders
+// get user's orders
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -51,7 +50,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create new order (when user clicks Buy Now)
+// create new order when user clicks buy now
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -64,7 +63,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Get product price
+    // get product price
     const [productRows] = await pool.query(
       "SELECT price FROM coffee_products WHERE product_id = ?",
       [product_id]
@@ -81,12 +80,12 @@ export async function POST(request: NextRequest) {
     const unitPrice = parseFloat(product.price);
     const totalAmount = unitPrice * quantity;
     
-    // Start transaction
+    // start transaction
     const connection = await pool.getConnection();
     await connection.beginTransaction();
     
     try {
-      // Create order
+      // create order
       const [orderResult] = await connection.query(
         `INSERT INTO orders (user_id, total_amount, shipping_address, payment_method, status) 
          VALUES (?, ?, ?, ?, 'completed')`,
@@ -95,7 +94,7 @@ export async function POST(request: NextRequest) {
       
       const orderId = (orderResult as any).insertId;
       
-      // Add order item
+      // add order item
       await connection.query(
         `INSERT INTO order_items (order_id, product_id, quantity, unit_price) 
          VALUES (?, ?, ?, ?)`,

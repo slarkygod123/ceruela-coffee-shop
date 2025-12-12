@@ -1,8 +1,7 @@
-// app/api/reviews/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/instances/db";
 
-// GET - Get reviews for a product
+// get reviews for a product
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -15,7 +14,7 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    // UPDATED QUERY - Added profile_picture field
+    // update query Added profile_picture field
     const query = `
       SELECT 
         r.*,
@@ -43,7 +42,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Submit a review
+// submit a review
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -56,7 +55,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Check if user already reviewed this product
+    // check if user already reviewed this product
     const [existing] = await pool.query(
       "SELECT * FROM reviews WHERE user_id = ? AND product_id = ?",
       [user_id, product_id]
@@ -73,7 +72,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Check if user has purchased this product
+    // check if user has purchased this product
     const [purchaseCheck] = await pool.query(
       `SELECT oi.order_item_id 
        FROM order_items oi
@@ -97,13 +96,13 @@ export async function POST(request: NextRequest) {
     await connection.beginTransaction();
     
     try {
-      // Add review
+      // add review
       await connection.query(
         "INSERT INTO reviews (user_id, product_id, rating, comment) VALUES (?, ?, ?, ?)",
         [user_id, product_id, rating, comment || null]
       );
       
-      // Update product rating and review count
+      // update product rating and review count
       const [ratingData] = await connection.query(
         `SELECT 
           AVG(rating) as avg_rating,
