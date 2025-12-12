@@ -50,7 +50,12 @@ export function OrderCard({ order, formatPrice, formatDate }: OrderCardProps) {
           <div className="space-y-3">
             {order.items && order.items.length > 0 ? (
               order.items.map((item, index) => (
-                <OrderItem key={index} item={item} formatPrice={formatPrice} />
+                <OrderItem key={index} item={{
+                  order_id: item.product_id,
+                  product_name: item.product_name,
+                  quantity: item.quantity,
+                  unit_price: item.unit_price,
+                }} formatPrice={formatPrice} />
               ))
             ) : (
               <p className="text-gray-500 text-sm">No items found</p>

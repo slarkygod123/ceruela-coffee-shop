@@ -41,13 +41,7 @@ export function EmailForm({
             error={errors.email}
             register={register("email")}
           />
-          
-          {isEmailChanged && (
-            <p className="text-xs text-amber-600">
-              Note: Changing your email will require verification.
-            </p>
-          )}
-
+        
           <Button
             type="submit"
             disabled={isUpdatingEmail || !isEmailChanged}
